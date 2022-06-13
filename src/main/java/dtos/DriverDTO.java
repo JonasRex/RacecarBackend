@@ -23,7 +23,8 @@ public class DriverDTO {
         this.experience = driver.getExperience();
         this.gender = driver.getGender();
 
-        this.userDTO = new UserDTO(driver.getUser());
+        if (driver.getUser() != null)
+            this.userDTO = new UserDTO(driver.getUser());
 
         if (driver.getCar() != null)
             this.carId = driver.getCar().getId();

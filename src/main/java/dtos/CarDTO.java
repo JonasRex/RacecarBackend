@@ -4,6 +4,7 @@ import entities.Car;
 import entities.Driver;
 import entities.Race;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public class CarDTO {
     private String year;
     private String sponsor;
     private String color;
-    private List<DriverDTO> driverDTOS;
+    private List<DriverDTO> driverDTOS = new ArrayList<>();
 //    private List<Integer> raceIDs;
 
     public CarDTO(Car car) {
