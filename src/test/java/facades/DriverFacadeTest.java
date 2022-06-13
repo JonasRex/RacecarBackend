@@ -14,12 +14,14 @@ import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DriverFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static IFacade<Driver> facade;
+    private static DriverFacade facade;
     Car c1;
     Driver d1, d2;
     User u1, u2;
@@ -27,7 +29,7 @@ class DriverFacadeTest {
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = DriverFacade.getFacade(emf);
+        facade = (DriverFacade) DriverFacade.getFacade(emf);
 
 
     }
@@ -138,5 +140,11 @@ class DriverFacadeTest {
     void getCount() {
         long actual = facade.getCount();
         assertEquals(2, actual);
+    }
+
+    @Test
+    void getAllDriversByCarID() {
+        List<Driver> driverList = facade.getAllDriversByCarID(c1.getId());
+        assertEquals(driverList.size(), c1.getDriverList().size());
     }
 }

@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 @Path("driver")
 public class DriverResource {
-    private static final IFacade<DriverDTO> FACADE =  DriverDTOFacade.getFacade();
+    private static final DriverDTOFacade FACADE = (DriverDTOFacade) DriverDTOFacade.getFacade();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -80,6 +80,13 @@ public class DriverResource {
     public String getCount()  {
         long count = FACADE.getCount();
         return "{\"count\":"+count+"}";  //Done manually so no need for a DTO
+    }
+
+    @GET
+    @Path("car/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getAllDriversByCarID(@PathParam("id") int id) {
+        return Response.ok().entity(GSON.toJson(FACADE.getAllDriversByCarID(id))).build();
     }
 }
 

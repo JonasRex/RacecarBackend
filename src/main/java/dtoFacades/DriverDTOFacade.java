@@ -7,18 +7,20 @@ import facades.IFacade;
 import facades.DriverFacade;
 import utils.EMF_Creator;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class DriverDTOFacade implements IFacade<DriverDTO> {
     private static IFacade<DriverDTO> instance;
-    private static IFacade<Driver> driverFacade;
+    private static DriverFacade driverFacade;
 
     public DriverDTOFacade() {
     }
 
     public static IFacade<DriverDTO> getFacade() {
         if (instance == null) {
-            driverFacade = DriverFacade.getFacade(EMF_Creator.createEntityManagerFactory());
+            driverFacade = (DriverFacade) DriverFacade.getFacade(EMF_Creator.createEntityManagerFactory());
             instance = new DriverDTOFacade();
         }
         return instance;
@@ -67,5 +69,9 @@ public class DriverDTOFacade implements IFacade<DriverDTO> {
     @Override
     public long getCount() {
         return driverFacade.getCount();
+    }
+
+    public List<DriverDTO> getAllDriversByCarID(int id) {
+        return DriverDTO.toList(driverFacade.getAllDriversByCarID(id));
     }
 }

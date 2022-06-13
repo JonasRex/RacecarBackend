@@ -3,6 +3,7 @@ package facades;
 import entities.Driver;
 import entities.User;
 import errorhandling.EntityNotFoundException;
+import security.errorhandling.AuthenticationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -147,6 +148,18 @@ public class DriverFacade implements IFacade<Driver> {
         try{
             return (long)em.createQuery("SELECT COUNT(d) FROM Driver d").getSingleResult();
         }finally{
+            em.close();
+        }
+    }
+
+    public List<Driver> getAllDriversByCarID(int id) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            TypedQuery<Driver> query = em.createQuery("SELECT d FROM Driver d WHERE d.car.id = '" + id + "'", Driver.class);
+            return query.getResultList();
+
+        } finally {
             em.close();
         }
     }
