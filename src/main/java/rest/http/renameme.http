@@ -1,0 +1,13 @@
+GET http://localhost:8080/devops_starter_war_exploded/api/xxx
+Content-Type: application/json
+
+
+###
+PUT http://localhost:8080/devops_starter_war_exploded/api/xxx/1
+Content-Type: application/json
+
+{
+  "str1": "First 1",
+  "str2": "Last 1"
+
+}
