@@ -72,7 +72,7 @@ public class RaceDTOFacade implements IFacade<RaceDTO> {
         return raceFacade.getCount();
     }
 
-    public List<RaceDTO> getRacesByDriverId(int id) throws EntityNotFoundException {
-        return RaceDTO.toList(raceFacade.getRacesByDriverId(id));
+    public List<RaceDTO> getRacesByDriverUsername(String username) throws EntityNotFoundException {
+        return RaceDTO.toList(raceFacade.getRacesByDriverUsername(username));
     }
 }

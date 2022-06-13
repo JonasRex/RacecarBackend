@@ -86,10 +86,10 @@ public class RaceResource {
 
 
     @GET
-    @Path("/driver/{id}")
+    @Path("/driver/{username}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getRacesByDriverId(@PathParam("id") int id) throws EntityNotFoundException {
-        return Response.ok().entity(GSON.toJson(FACADE.getRacesByDriverId(id))).build();
+    public Response getRacesByDriverUsername(@PathParam("username") String username) throws EntityNotFoundException {
+        return Response.ok().entity(GSON.toJson(FACADE.getRacesByDriverUsername(username))).build();
     }
 
 }

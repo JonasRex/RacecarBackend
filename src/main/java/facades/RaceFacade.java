@@ -3,7 +3,9 @@ package facades;
 import entities.Car;
 import entities.Driver;
 import entities.Race;
+import entities.User;
 import errorhandling.EntityNotFoundException;
+import security.errorhandling.AuthenticationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -155,12 +157,28 @@ public class RaceFacade implements IFacade<Race> {
         }
     }
 
-    public List<Race> getRacesByDriverId(int id) throws EntityNotFoundException {
+    public List<Race> getRacesByDriverUsername(String username) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
 
-        Driver driver = em.find(Driver.class, id);
-        if (driver == null)
-            throw new EntityNotFoundException("Driver with ID: " + id + " was not found");
+        User user;
+        Driver driver;
+
+        try {
+            TypedQuery<User> query1 = em.createQuery("SELECT u FROM User u WHERE u.userName = '" + username + "'", User.class);
+            user = query1.getSingleResult();
+
+
+            TypedQuery<Driver> query2 = em.createQuery("SELECT d FROM Driver d WHERE d.user.id = '" + user.getId() + "'", Driver.class);
+            driver = query2.getSingleResult();
+
+            if (driver == null)
+                throw new EntityNotFoundException("Driver with ID: " + user.getId() + " was not found");
+
+
+        } finally {
+            em.close();
+        }
+
 
         Car car = driver.getCar();
 

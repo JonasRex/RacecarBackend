@@ -1,4 +1,4 @@
-GET https://www.rexdanorum.dk/tomcat/racecar/api/race
+GET https://www.rexdanorum.dk/tomcat/racecar/api/race/driver/1
 Content-Type: application/json
 
 ### Generate Races ######################################
@@ -62,5 +62,9 @@ PUT https://www.rexdanorum.dk/tomcat/racecar/api/race/3
   "carDTOs": []
 }
 
+
+### Add to Race 1: Car 1
+PUT https://www.rexdanorum.dk/tomcat/racecar/api/driver/add/1/2
+Content-Type: application/json
 
 

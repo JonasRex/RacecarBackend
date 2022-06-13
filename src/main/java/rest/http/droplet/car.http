@@ -1,4 +1,4 @@
-GET http://localhost:8080/racecar/api/car
+GET http://localhost:8080/racecar/api/car/driver/1
 Content-Type: application/json
 
 
