@@ -23,7 +23,7 @@ import utils.EMF_Creator;
 
 
 public class LoginEndpointTest {
-
+/*
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
@@ -219,5 +219,7 @@ public class LoginEndpointTest {
                 .body("code", equalTo(403))
                 .body("message", equalTo("Not authenticated - do login"));
     }
+
+ */
 
 }

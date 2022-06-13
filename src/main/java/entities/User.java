@@ -39,12 +39,8 @@ public class User implements Serializable {
   @Column(name = "email")
   private String email;
 
-  @JoinTable(
-          name = "user_RENAMEME",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "RENAMEME_id"))
-  @ManyToMany
-  private List<RenameMe> renameMesList = new ArrayList<>();
+  @OneToOne(mappedBy = "user")
+  private Driver driver;
 
   @JoinTable(name = "user_roles", joinColumns = {
           @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
@@ -148,24 +144,13 @@ public class User implements Serializable {
     roleList.add(userRole);
   }
 
-  public List<RenameMe> getRenameMesList() {
-    return renameMesList;
+  public Driver getDriver() {
+    return driver;
   }
 
-  public void addRenameMe(RenameMe renameMe) {
-    this.renameMesList.add(renameMe);
-    if(!renameMe.getUserList().contains(this)){
-      renameMe.addUser(this);
-    }
+  public void setDriver(Driver driver) {
+    this.driver = driver;
+    driver.setUser(this);
   }
 
-  public void setRenameMesList(List<RenameMe> renameMesList) {
-    this.renameMesList = renameMesList;
-  }
-
-  public void removeRenameMe(RenameMe renameMe) {
-    this.renameMesList.remove(renameMe);
-    //if(!renameMe.getUserList().contains(this))
-      renameMe.getUserList().remove(this);
-  }
 }

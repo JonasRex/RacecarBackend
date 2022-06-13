@@ -1,6 +1,5 @@
 package facades;
 
-import entities.RenameMe;
 import entities.Role;
 import entities.User;
 import javax.persistence.EntityManager;
@@ -110,11 +109,6 @@ public class UserFacade implements IFacade<User> {
             if (u == null)
                 throw new EntityNotFoundException("Could not remove User with id: " + id);
 
-            if (u.getRenameMesList() != null)
-                for (RenameMe renameMe : u.getRenameMesList()) {
-                    u.removeRenameMe(renameMe);
-                }
-
 
 
             em.getTransaction().begin();
@@ -128,7 +122,8 @@ public class UserFacade implements IFacade<User> {
 
     @Override
     public User addRelation(int id1, int id2) throws EntityNotFoundException {
-        EntityManager em = emf.createEntityManager();
+
+      /*  EntityManager em = emf.createEntityManager();
         try{
             User user = em.find(User.class,id1);
             if(user == null){
@@ -146,10 +141,14 @@ public class UserFacade implements IFacade<User> {
         } finally {
             em.close();
         }
+
+       */
+        return null;
     }
 
     @Override
     public User removeRelation(int id1, int id2) throws EntityNotFoundException {
+        /*
         EntityManager em = emf.createEntityManager();
         try{
             User user = em.find(User.class, id1);
@@ -170,6 +169,9 @@ public class UserFacade implements IFacade<User> {
         } finally {
             em.close();
         }
+
+         */
+        return null;
     }
 
     @Override

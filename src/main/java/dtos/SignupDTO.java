@@ -1,6 +1,5 @@
 package dtos;
 
-import entities.RenameMe;
 import entities.Role;
 import entities.User;
 
@@ -17,7 +16,7 @@ public class SignupDTO {
     private String lastName;
     private String email;
     private List<Role> roleList = new ArrayList<>();
-    private List<RenameMeDTO> renameMeDTOS = new ArrayList<>(); // List of IDs.
+    //private List<RenameMeDTO> renameMeDTOS = new ArrayList<>(); // List of IDs.
 
 
     public SignupDTO(User user) {
@@ -30,9 +29,9 @@ public class SignupDTO {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.roleList.addAll(user.getRoleList());
-        for (RenameMe renameMe : user.getRenameMesList()) {
-            this.renameMeDTOS.add(new RenameMeDTO(renameMe));
-        }
+//        for (RenameMe renameMe : user.getRenameMesList()) {
+//            this.renameMeDTOS.add(new RenameMeDTO(renameMe));
+//        }
     }
 
 
@@ -110,9 +109,7 @@ public class SignupDTO {
         this.email = email;
     }
 
-    public List<RenameMeDTO> getRenameMeDTOS() {
-        return renameMeDTOS;
-    }
+
 
 
 }

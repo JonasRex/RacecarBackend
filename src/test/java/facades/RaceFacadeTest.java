@@ -1,9 +1,13 @@
 package facades;
 
-import entities.Role;
+import entities.Car;
+import entities.Race;
 import entities.User;
 import errorhandling.EntityNotFoundException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
@@ -11,20 +15,17 @@ import javax.persistence.EntityManagerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-class UserFacadeTest {
+class RaceFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static IFacade<User> facade;
-    User u1,u2;
-    Role userRole;
-
+    private static IFacade<Race> facade;
+    Race r1, r2;
+    Car c1;
 
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = UserFacade.getFacade(emf);
-
+        facade = RaceFacade.getFacade(emf);
 
 
     }
@@ -32,7 +33,7 @@ class UserFacadeTest {
     // Clean up database after test is done or use a persistence unit with drop-and-create to start up clean on every test
     @AfterAll
     public static void tearDownClass() {
-
+        // emf.close();
     }
 
     // Setup the DataBase in a known state BEFORE EACH TEST
@@ -41,20 +42,20 @@ class UserFacadeTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("User.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Role.deleteAllRows").executeUpdate();
-            u1 = new User("AnnaAnna", "test","Anna", "Andersen", "aa@mail.com");
-            u2 = new User("BomberBo", "test","Bo", "Berthelsen", "bb@mail.com");
+
+            em.createNamedQuery("Race.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Car.deleteAllRows").executeUpdate();
 
 
-            userRole = new Role("user");
+            r1 = new Race("Sunday Cup", "Roskilde", "01072022", 2);
+            r2 = new Race("Rookie Cup", "Taastrup", "30062022", 1);
 
-            u1.addRole(userRole);
-            u2.addRole(userRole);
+            c1 = new Car("Lightning McQueen", "Ford", "Taurus", "2012", "Shell", "red");
+            r2.addCar(c1);
 
-            em.persist(userRole);
-            em.persist(u1);
-            em.persist(u2);
+            em.persist(r1);
+            em.persist(r2);
+            em.persist(c1);
 
             em.getTransaction().commit();
         } finally {
@@ -62,18 +63,17 @@ class UserFacadeTest {
         }
     }
 
-
     @Test
     void create() {
-        User expected = new User("Henning", "test","Henning", "Olsen", "ho@mail.com");
-        User actual   = facade.create(expected);
+        Race expected = new Race("Championship", "Valby", "20072022", 3);
+        Race actual = facade.create(expected);
         assertEquals(expected, actual);
     }
 
     @Test
     void getById() throws EntityNotFoundException {
-        User expected = u1;
-        User actual = facade.getById(u1.getId());
+        Race expected = r1;
+        Race actual = facade.getById(r1.getId());
         assertEquals(expected.getId(), actual.getId());
     }
 
@@ -85,45 +85,40 @@ class UserFacadeTest {
 
     @Test
     void update() throws EntityNotFoundException {
-        u2.setFirstName("Lone");
-        User expected = u2;
-        User actual = facade.update(u2);
-        assertEquals(expected.getFirstName(),actual.getFirstName());
+        r1.setName("Monday Cup");
+        Race expected = r1;
+        Race actual = facade.update(r1);
+        assertEquals(expected.getName(),actual.getName());
     }
 
     @Test
     void delete() throws EntityNotFoundException {
-        User p = facade.delete(u1.getId());
+        Race race = facade.delete(r1.getId());
         int expected = 1;
         int actual = facade.getAll().size();
         assertEquals(expected, actual);
-        assertEquals(p.getId(),u1.getId());
+        assertEquals(race.getId(),r1.getId());
     }
 
-    /*
     @Test
     void addRelation() throws EntityNotFoundException {
-        u1.addRenameMe(r1);
-        User p = facade.addRelation(u1.getId(), r1.getId());
-        assertEquals(1, u1.getRenameMesList().size());
-        assertEquals(p.getId(), u1.getId());
+        r1.addCar(c1);
+        Race race = facade.addRelation(r1.getId(), c1.getId());
+        assertEquals(1, r1.getCarList().size());
+        assertEquals(race.getId(), r1.getId());
     }
 
     @Test
     void removeRelation() throws EntityNotFoundException {
-        u2.removeRenameMe(r1);
-        User p = facade.removeRelation(u2.getId(), r1.getId());
-        assertEquals(0, u2.getRenameMesList().size());
-        assertEquals(p.getId(), u2.getId());
+        r2.getCarList().remove(c1);
+        Race race = facade.removeRelation(r2.getId(), c1.getId());
+        assertEquals(0, r2.getCarList().size());
+        assertEquals(race.getId(), r2.getId());
     }
-
-     */
 
     @Test
     void getCount() {
         long actual = facade.getCount();
         assertEquals(2, actual);
     }
-
-
 }
