@@ -2,7 +2,7 @@ name: Github actions with maven build and deploy
 on: 
   push:
     branches: 
-    - master
+    - main
 jobs:
   Do-the-travis-thing:
     runs-on: ubuntu-20.04 #or ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
           # character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
           # collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
           mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-          mysql database: 'startcode_test' # Optional, default value is "test". The specified database which will be create
+          mysql database: 'racecar_test' # Optional, default value is "test". The specified database which will be create
           # mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
           mysql user: 'dev' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
           # mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
