@@ -2,9 +2,9 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dtos.UserDTO;
-import entities.Role;
-import entities.User;
+import dtos.RaceDTO;
+import entities.Car;
+import entities.Race;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
@@ -29,11 +29,10 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserResourceTest {
-    private static final int SERVER_PORT = 7777;
+class RaceResourceTest {    private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-    private static User u1, u2, u3;
-    private static Role userRole;
+    private static Race r1, r2, r3;
+    private static Car c1;
 
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
@@ -85,19 +84,16 @@ class UserResourceTest {
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("Role.deleteAllRows").executeUpdate();
 
-            u1 = new User("AnnaAnna", "test", "Anna", "Andersen", "aa@mail.com");
-            u2 = new User("BomberBo", "test", "Bo", "Berthelsen", "bb@mail.com");
 
+            r1 = new Race("Sunday Cup", "Roskilde", "01072022", 2);
+            r2 = new Race("Rookie Cup", "Taastrup", "30062022", 1);
 
-            userRole = new Role("user");
+            c1 = new Car("Lightning McQueen", "Ford", "Taurus", "2012", "Shell", "red");
+            r2.addCar(c1);
 
-            u1.addRole(userRole);
-            u2.addRole(userRole);
-
-            em.persist(userRole);
-
-            em.persist(u1);
-            em.persist(u2);
+            em.persist(r1);
+            em.persist(r2);
+            em.persist(c1);
 
             em.getTransaction().commit();
         } finally {
@@ -105,38 +101,39 @@ class UserResourceTest {
         }
     }
 
+
     @Test
     public void testServerIsUp() {
-        given().when().get("/user").then().statusCode(200);
+        given().when().get("/race").then().statusCode(200);
     }
 
     @Test
     void getAll() {
-        List<UserDTO> userDTOS;
+        List<RaceDTO> raceDTOS;
 
-        userDTOS = given()
+        raceDTOS = given()
                 .contentType("application/json")
                 .when()
-                .get("/user")
+                .get("/race")
                 .then()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .extract().body().jsonPath().getList("", UserDTO.class);
+                .extract().body().jsonPath().getList("", RaceDTO.class);
 
 
-        assertEquals(userDTOS.size(), 2);
+        assertEquals(raceDTOS.size(), 2);
     }
 
     @Test
     void getById() {
         given()
                 .contentType("application/json")
-                .get("/user/{id}", u1.getId())
+                .get("/race/{id}", r1.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("firstName", equalTo(u1.getFirstName()))
-                .body("lastName", equalTo(u1.getLastName()))
-                .body("email", equalTo(u1.getEmail()));
+                .body("name", equalTo(r1.getName()))
+                .body("location", equalTo(r1.getLocation()))
+                .body("duration", equalTo(r1.getDuration()));
     }
 
     @Test
@@ -147,73 +144,97 @@ class UserResourceTest {
 
         given()
                 .contentType("application/json")
-                .get("/user/99999")
+                .get("/race/99999")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
-                .body("message", equalTo("User with ID: 99999 was not found"));
+                .body("message", equalTo("Race with ID: 99999 was not found"));
     }
 
 
     @Test
     void create() {
-        u3 = new User("Charlie", "test", "Charlie", "Cameron", "cc@mail.com");
-        String requestBody = GSON.toJson(new UserDTO(u3));
+        r3 = new Race("Championship", "Valby", "20072022", 3);
+        String requestBody = GSON.toJson(new RaceDTO(r3));
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .and()
                 .body(requestBody)
                 .when()
-                .post("/user")
+                .post("/race")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("firstName", equalTo(u3.getFirstName()))
-                .body("lastName", equalTo(u3.getLastName()))
-                .body("email", equalTo(u3.getEmail()));
+                .body("name", equalTo(r3.getName()))
+                .body("location", equalTo(r3.getLocation()))
+                .body("duration", equalTo(r3.getDuration()));
     }
 
     @Test
     void update() {
-        UserDTO userDTO = new UserDTO(u1);
-        userDTO.setFirstName("Lone");
-        String requestBody = GSON.toJson(userDTO);
+        RaceDTO raceDTO = new RaceDTO(r1);
+        raceDTO.setName("Monday Cup");
+        String requestBody = GSON.toJson(raceDTO);
 
         given()
                 .header("Content-type", ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("/user/" + u1.getId())
+                .put("/race/" + r1.getId())
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("id", equalTo(u1.getId()))
-                .body("firstName", equalTo("Lone"));
+                .body("id", equalTo(r1.getId()))
+                .body("name", equalTo("Monday Cup"));
     }
 
     @Test
     void delete() {
         given()
                 .header("Content-type", ContentType.JSON)
-                .pathParam("id", u1.getId())
-                .delete("/user/{id}")
+                .pathParam("id", r1.getId())
+                .delete("/race/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("id", equalTo(u1.getId()));
+                .body("id", equalTo(r1.getId()));
     }
 
+    @Test
+    void addRelation() {
+        given()
+                .header("Content-type", ContentType.JSON)
+                .pathParam("id", r1.getId()).pathParam("entityid", c1.getId())
+                .put("/race/add/{id}/{entityid}")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("id", equalTo(r1.getId()))
+                .body("carDTOs", hasItems(hasEntry("id",c1.getId())));
+
+    }
+
+    @Test
+    void removeRelation() {
+        given()
+                .header("Content-type", ContentType.JSON)
+                .pathParam("id", r2.getId()).pathParam("entityid", c1.getId())
+                .delete("/race/remove/{id}/{entityid}")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("id", equalTo(r2.getId()))
+                .body("carDTOs", empty());
+    }
 
     @Test
     public void getCount() throws Exception {
         given()
                 .contentType("application/json")
-                .get("/user/count").then()
+                .get("/race/count").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("count", equalTo(2));
     }
-
-
 }
