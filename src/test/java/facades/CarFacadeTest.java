@@ -3,7 +3,6 @@ package facades;
 import entities.Driver;
 import entities.Car;
 import entities.Race;
-import entities.User;
 import errorhandling.EntityNotFoundException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
