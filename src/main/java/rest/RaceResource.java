@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dtoFacades.RaceDTOFacade;
+import dtos.CarDTO;
 import dtos.RaceDTO;
 import errorhandling.EntityNotFoundException;
 import facades.IFacade;
@@ -10,10 +11,11 @@ import facades.IFacade;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("race")
 public class RaceResource {
-    private static final IFacade<RaceDTO> FACADE =  RaceDTOFacade.getFacade();
+    private static final RaceDTOFacade FACADE = (RaceDTOFacade) RaceDTOFacade.getFacade();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @GET
@@ -81,4 +83,13 @@ public class RaceResource {
         long count = FACADE.getCount();
         return "{\"count\":"+count+"}";  //Done manually so no need for a DTO
     }
+
+
+    @GET
+    @Path("/driver/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRacesByDriverId(@PathParam("id") int id) throws EntityNotFoundException {
+        return Response.ok().entity(GSON.toJson(FACADE.getRacesByDriverId(id))).build();
+    }
+
 }

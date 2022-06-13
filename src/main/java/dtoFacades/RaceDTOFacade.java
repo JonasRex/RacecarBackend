@@ -1,24 +1,27 @@
 package dtoFacades;
 
 import dtos.RaceDTO;
+import entities.Car;
+import entities.Driver;
 import entities.Race;
 import errorhandling.EntityNotFoundException;
 import facades.IFacade;
 import facades.RaceFacade;
 import utils.EMF_Creator;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public class RaceDTOFacade implements IFacade<RaceDTO> {
     private static IFacade<RaceDTO> instance;
-    private static IFacade<Race> raceFacade;
+    private static RaceFacade raceFacade;
 
     public RaceDTOFacade() {
     }
 
     public static IFacade<RaceDTO> getFacade() {
         if (instance == null) {
-            raceFacade = RaceFacade.getFacade(EMF_Creator.createEntityManagerFactory());
+            raceFacade = (RaceFacade) RaceFacade.getFacade(EMF_Creator.createEntityManagerFactory());
             instance = new RaceDTOFacade();
         }
         return instance;
@@ -67,5 +70,9 @@ public class RaceDTOFacade implements IFacade<RaceDTO> {
     @Override
     public long getCount() {
         return raceFacade.getCount();
+    }
+
+    public List<RaceDTO> getRacesByDriverId(int id) throws EntityNotFoundException {
+        return RaceDTO.toList(raceFacade.getRacesByDriverId(id));
     }
 }

@@ -1,6 +1,7 @@
 package facades;
 
 import entities.Car;
+import entities.Driver;
 import entities.Race;
 import errorhandling.EntityNotFoundException;
 
@@ -86,7 +87,7 @@ public class RaceFacade implements IFacade<Race> {
 
 
         if (r.getCarList() != null)
-            for (Car car : r.getCarList() ) {
+            for (Car car : r.getCarList()) {
                 r.removeCar(car);
             }
 
@@ -100,14 +101,14 @@ public class RaceFacade implements IFacade<Race> {
     @Override
     public Race addRelation(int id1, int id2) throws EntityNotFoundException {
         EntityManager em = emf.createEntityManager();
-        try{
-            Race race = em.find(Race.class,id1);
-            if(race == null){
-                throw new EntityNotFoundException("Race with ID: " + id1  + " not found");
+        try {
+            Race race = em.find(Race.class, id1);
+            if (race == null) {
+                throw new EntityNotFoundException("Race with ID: " + id1 + " not found");
             }
-            Car car = em.find(Car.class,id2);
-            if(car == null){
-                throw new EntityNotFoundException("Car with ID: " + id2  + " not found");
+            Car car = em.find(Car.class, id2);
+            if (car == null) {
+                throw new EntityNotFoundException("Car with ID: " + id2 + " not found");
             }
             race.addCar(car);
             em.getTransaction().begin();
@@ -122,13 +123,13 @@ public class RaceFacade implements IFacade<Race> {
     @Override
     public Race removeRelation(int id1, int id2) throws EntityNotFoundException {
         EntityManager em = emf.createEntityManager();
-        try{
+        try {
             Race race = em.find(Race.class, id1);
-            if(race == null){
+            if (race == null) {
                 throw new EntityNotFoundException("Race with ID: " + id1 + " not found");
             }
             Car car = em.find(Car.class, id2);
-            if(car == null){
+            if (car == null) {
                 throw new EntityNotFoundException("Car with ID: " + id2 + " not found");
             }
 
@@ -146,11 +147,23 @@ public class RaceFacade implements IFacade<Race> {
     @Override
     public long getCount() {
         EntityManager em = getEntityManager();
-        try{
-            return  (long)em.createQuery("SELECT COUNT(r) FROM Race r").getSingleResult();
+        try {
+            return (long) em.createQuery("SELECT COUNT(r) FROM Race r").getSingleResult();
 
-        }finally{
+        } finally {
             em.close();
         }
+    }
+
+    public List<Race> getRacesByDriverId(int id) throws EntityNotFoundException {
+        EntityManager em = getEntityManager();
+
+        Driver driver = em.find(Driver.class, id);
+        if (driver == null)
+            throw new EntityNotFoundException("Driver with ID: " + id + " was not found");
+
+        Car car = driver.getCar();
+
+        return car.getRaceList();
     }
 }
