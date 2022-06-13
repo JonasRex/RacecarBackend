@@ -22,14 +22,15 @@ public class RaceDTO {
         this.location = race.getLocation();
         this.date = race.getDate();
         this.duration = race.getDuration();
-        for(Car car : race.getCarList()) {
+        for (Car car : race.getCarList()) {
             this.carDTOs.add(new CarDTO(car));
         }
     }
 
     public Race getEntity() {
         Race race = new Race(this.name, this.location, this.date, this.duration);
-        this.carDTOs.forEach(carDTO -> race.addCar(carDTO.getEntity()));
+        if (this.carDTOs.size() != 0)
+            this.carDTOs.forEach(carDTO -> race.addCar(carDTO.getEntity()));
         return race;
     }
 

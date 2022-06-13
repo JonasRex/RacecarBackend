@@ -1,0 +1,48 @@
+GET http://localhost:8080/racecar/api/car
+Content-Type: application/json
+
+
+### CAR 1 - Generate
+POST http://localhost:8080/racecar/api/car
+Content-Type: application/json
+
+{
+  "name": "Team Lightning",
+  "brand": "Ford",
+  "make": "Mondeo",
+  "year": "2012",
+  "sponsor": "SAS",
+  "color": "blue",
+  "driverDTOS": []
+}
+### CAR 2 - Generate
+POST http://localhost:8080/racecar/api/car
+Content-Type: application/json
+
+{
+  "name": "Codan-BMW",
+  "brand": "BMW",
+  "make": "M3",
+  "year": "2017",
+  "sponsor": "Codan",
+  "color": "gul",
+  "driverDTOS": []
+}
+
+### ADD RELATION ######################################
+
+### Add to CAR 1: Driver 1
+PUT http://localhost:8080/racecar/api/car/add/1/1
+Content-Type: application/json
+
+
+### Add to CAR 2: Driver 2
+PUT http://localhost:8080/racecar/api/car/add/2/2
+Content-Type: application/json
+
+### Remove RELATION ######################################
+
+### Remove from Car 2: Driver 2
+
+DELETE http://localhost:8080/racecar/api/car/remove/2/2
+Content-Type: application/json

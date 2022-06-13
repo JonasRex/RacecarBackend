@@ -1,0 +1,42 @@
+GET http://localhost:8080/racecar/api/driver
+Content-Type: application/json
+
+
+### DRIVER 1 - Generate
+POST http://localhost:8080/racecar/api/driver
+Content-Type: application/json
+
+{
+  "name": "Jonas Hansen",
+  "birthYear": "1984",
+  "experience": "rookie",
+  "gender": "male"
+}
+### DRIVER 2 - Generate
+POST http://localhost:8080/racecar/api/driver
+Content-Type: application/json
+
+{
+  "name": "Peter Jensen",
+  "birthYear": "1979",
+  "experience": "pro",
+  "gender": "male"
+}
+
+### ADD RELATION ######################################
+
+### Add to CAR 1: Driver 1
+PUT http://localhost:8080/racecar/api/car/add/1/1
+Content-Type: application/json
+
+
+### Add to CAR 2: Driver 2
+PUT http://localhost:8080/racecar/api/car/add/2/2
+Content-Type: application/json
+
+### Remove RELATION ######################################
+
+### Remove from Car 2: Driver 2
+
+DELETE http://localhost:8080/racecar/api/car/remove/2/2
+Content-Type: application/json
